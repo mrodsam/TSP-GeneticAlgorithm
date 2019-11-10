@@ -6,25 +6,35 @@ import java.net.URL;
 import java.util.Scanner;
 import java.util.TreeMap;
 
+/**
+ * Clase para la gestión de los ficheros en los que se encuentran las
+ * coordenadas de cada ciudad y los parámetros del Algoritmo Genético
+ * 
+ * @author Marta Rodríguez Sampayo
+ *
+ */
 public class FileManagement {
+	/**
+	 * Lectura del archivo de texto que contiene las coordenadas de las ciudades.
+	 */
 	public static void readCities() {
 
 		System.out.println(
 				"Por favor, introduzca el path del fichero donde se encuentran las coordenadas de las ciudades: ");
 
-		String entradaTeclado = "";
-		Scanner entradaEscaner = new Scanner(System.in);
-		entradaTeclado = entradaEscaner.nextLine();
+		String keyboardInput = "";
+		Scanner scInput = new Scanner(System.in);
+		keyboardInput = scInput.nextLine();
 
-		System.out.println("Entrada recibida por teclado es: \"" + entradaTeclado + "\"");
+		System.out.println("Entrada recibida por teclado es: \"" + keyboardInput + "\"");
 
 		Main.cities = new TreeMap<Integer, City>();
 
 		URL url = null;
-		if (entradaTeclado.isEmpty())
+		if (keyboardInput.isEmpty())
 			url = Main.class.getResource("TSP-15.txt");
 		else
-			url = Main.class.getResource(entradaTeclado);
+			url = Main.class.getResource(keyboardInput);
 
 		File file = new File(url.getPath());
 		Scanner sc = null;
@@ -47,6 +57,10 @@ public class FileManagement {
 
 	}
 
+	/**
+	 * Lectura del archivo de texto que contiene los parámetros del Algoritmo
+	 * Genético
+	 */
 	public static void readParameters() {
 
 		System.out.println(

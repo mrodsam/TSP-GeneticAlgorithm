@@ -1,10 +1,22 @@
 package tsp_ec;
 
+/**
+ * Clase que define un objeto para cada ciudad a través de sus coordenadas cartesianas
+ * 
+ * @author Marta Rodríguez Sampayo
+ *
+ */
 public class City {
 
 	private Double x;
 	private Double y;
 
+	/**
+	 * Constructor para cada ciudad
+	 * 
+	 * @param x Coordenada en el eje X
+	 * @param y Coordenada en el eje Y
+	 */
 	public City(Double x, Double y) {
 		this.x = x;
 		this.y = y;
@@ -26,6 +38,12 @@ public class City {
 		this.y = y;
 	}
 
+	/**
+	 * Método para calcular la distancia entre dos ciudades
+	 * 
+	 * @param c Ciudad destino (hasta la que se desea calcular la distancia)
+	 * @return Distancia entre ambas ciudades
+	 */
 	public Double getDistance(City c) {
 		Double dist = null;
 		Double x = null;

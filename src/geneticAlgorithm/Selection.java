@@ -4,6 +4,13 @@ import java.util.LinkedList;
 
 import tsp_ec.Main;
 
+/**
+ * Clase con la implementación de la selección de padres y la selección de
+ * supervivientes
+ * 
+ * @author Marta Rodríguez Sampayo
+ *
+ */
 public class Selection {
 
 	/*
@@ -11,9 +18,14 @@ public class Selection {
 	 * aptos en la población actual van a tener más probabilidad de ser
 	 * seleccionados como padres y podrán aparecer repetidos más veces
 	 */
+	/**
+	 * Selección de padres.
+	 * 
+	 * La selección se realiza por torneo, con un tamaño configurado previamente.
+	 * 
+	 * Son seleccionados tantos padres como el tamaño de la población actual.
+	 */
 	public static void parentSelection() {
-		//System.out.println();
-		//System.out.println("SELECCIÓN DE PADRES");
 
 		Main.matingPool = new LinkedList<String>();
 		LinkedList<String> candidatesPool = new LinkedList<String>();
@@ -71,13 +83,17 @@ public class Selection {
 			Main.matingPool.add(currentMember);
 		}
 
-		//System.out.println("Padres: " + Main.matingPool.size());
-		//Main.matingPool.forEach((v) -> System.out.println("Padre: " + v + " Fitness: " + Main.fitnessFunction(v)));
-
 	}
 
+	/**
+	 * Selección de supervivientes.
+	 * 
+	 * Método generacional: se sustituye la población actual por la nueva población.
+	 * 
+	 * Elitismo: el individuo con mejor valor de adaptación permanece en la
+	 * población.
+	 */
 	public static void survivorSelection() {
-		//System.out.println("SELECCIÓN DE SUPERVIVIENTES");
 		/*
 		 * Comparar el fitness del padre que es el más fit con los hijos, si ninguno
 		 * gana, se queda el padre Si se queda el padre, buscamos otro en la población
@@ -118,8 +134,8 @@ public class Selection {
 		}
 
 		/*
-		 * Si gana uno de los hijos, me cargo a toda la población y meto a todos
-		 * los hijos en su lugar
+		 * Si gana uno de los hijos, me cargo a toda la población y meto a todos los
+		 * hijos en su lugar
 		 */
 		if (offspringMostFit) {
 			Main.population.clear();
@@ -147,8 +163,6 @@ public class Selection {
 			Main.population = (LinkedList<String>) Main.offspring.clone();
 			Main.population.add(mostFit);
 		}
-
-		//Main.population.forEach((v) -> System.out.println("Individuo: " + v));
 
 	}
 }
