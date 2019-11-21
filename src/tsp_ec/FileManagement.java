@@ -2,6 +2,9 @@ package tsp_ec;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -19,7 +22,7 @@ public class FileManagement {
 
 	public static void mainMenu() {
 		int menuInput;
-		
+
 		System.out.println("Introduzca el valor entero correspondiente: ");
 		System.out.println("1. TSP-15");
 		System.out.println("2. TSP-100");
@@ -29,7 +32,7 @@ public class FileManagement {
 		Scanner scInput = new Scanner(System.in);
 		menuInput = scInput.nextInt();
 		scInput.close();
-		
+
 		switch (menuInput) {
 		case 1:
 			citiesPath = "TSP-15";
@@ -58,7 +61,7 @@ public class FileManagement {
 		Main.cities = new TreeMap<Integer, City>();
 
 		URL url = Main.class.getResource(citiesPath);
-		
+
 		File file = new File(url.getPath());
 		Scanner sc = null;
 		try {
@@ -73,7 +76,7 @@ public class FileManagement {
 			i = Integer.parseInt(sc.next());
 
 			c = new City(Double.valueOf(sc.next()), Double.valueOf(sc.next()));
-			
+
 			Main.cities.put(i, c);
 		}
 
@@ -104,6 +107,35 @@ public class FileManagement {
 			if (line.split(",").length == 4)
 				Main.params.setMutationRate(Double.parseDouble(line.split(",")[3]));
 
+		}
+
+	}
+
+	public static void writeData(long executionTime, Double fitness) {
+		try {
+			FileWriter fw = new FileWriter("times.txt", true);
+			PrintWriter pw = new PrintWriter(fw);
+			pw.print(executionTime + "\t");
+			pw.println(fitness);
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void writeEvaluationFile(Double sr, Double MBF) {
+
+		try {
+			FileWriter fw = new FileWriter("evaluation.txt", true);
+			PrintWriter pw = new PrintWriter(fw);
+			pw.print(sr+"\t");
+			pw.println(MBF);
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}

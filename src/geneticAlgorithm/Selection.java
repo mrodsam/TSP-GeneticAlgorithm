@@ -139,7 +139,7 @@ public class Selection {
 		if (offspringMostFit) {
 			Main.population.clear();
 			Main.population = (LinkedList<String>) Main.offspring.clone();
-			
+
 			/*
 			 * En caso de que ninguno de los hijos tenga mejor valor de adaptación: se busca
 			 * al que peor valor de adaptación tiene, se elimina y se sustituye por el

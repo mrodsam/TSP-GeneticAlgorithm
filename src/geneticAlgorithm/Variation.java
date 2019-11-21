@@ -208,7 +208,6 @@ public class Variation {
 	 * @param individual Individuo al que se aplica la mutación
 	 */
 	private static void swapMutation(String individual) {
-		System.out.println("MUTATION");
 
 		String[] individualStrArray = individual.split(",");
 
