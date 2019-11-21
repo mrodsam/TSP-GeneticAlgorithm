@@ -42,6 +42,10 @@ public class Variation {
 			String[] child1 = new String[Main.cities.size()];
 			String[] child2 = new String[Main.cities.size()];
 
+			/*
+			 * Elección aleatoria de dos padres dentro de todos los elegidos en el proceso
+			 * de selección
+			 */
 			randomParent1D = (Math.random() * ((Main.matingPool.size() - 1) + 1));
 			randomParent1 = (int) randomParent1D;
 
@@ -55,6 +59,10 @@ public class Variation {
 
 			double random = Math.random();
 
+			/*
+			 * Según la probabilidad de cruce dada, se realiza Partially Mapped Crossover
+			 * entre los dos padres escogidos aleatoriamente
+			 */
 			if (random < Main.params.getCrossoverRate()) {
 				// Puntos de corte aleatorios
 				double result1 = Math.random() * ((Main.cities.keySet().size() - 1) + 1);
@@ -70,6 +78,10 @@ public class Variation {
 				Main.offspring.add(Utils.arrayToString(child2));
 
 			} else {
+				/*
+				 * En caso de no realizarse el método de cruce, la descendencia se genera de
+				 * forma asexual, siendo cada hijo una copia de cada padre
+				 */
 				Main.offspring.add(Utils.arrayToString(parent1));
 				Main.offspring.add(Utils.arrayToString(parent2));
 			}
@@ -100,8 +112,9 @@ public class Variation {
 	 */
 	private static void partiallyMappedCrossover(String[] parent1, String[] parent2, String[] child, int point1,
 			int point2) {
-		// copy the segment between them from the first parent (P1) into the first
-		// offspring
+		/*
+		 * Se copia el segmento delimitado por los puntos de cruce de P1 en el hijo
+		 */
 		for (int i = point1; i < point2; i++) {
 			child[i] = parent1[i];
 		}
@@ -111,8 +124,7 @@ public class Variation {
 			boolean copied = false;
 
 			/*
-			 * Comprobar si el valor de la posición i de parent2 está en el segmento de
-			 * child1
+			 * Comprobar si el valor de la posición i de P2 está en el segmento del hijo
 			 */
 			for (int j = point1; j < point2; j++) {
 
@@ -122,8 +134,8 @@ public class Variation {
 				}
 			}
 
-			/* Si el valor no está en child1 */
 			int ni = i;
+			/* Si el valor no se encuentra en el hijo */
 			if (!copied) {
 				int j;
 				while (true) {
@@ -138,7 +150,7 @@ public class Variation {
 			}
 		}
 		/*
-		 * Copiar en los huecos vacíos del hijo los valores del segundo padre utilizado
+		 * Copiar en los huecos vacíos del hijo los valores restantes de P2
 		 */
 		for (int i = 0; i < child.length; i++) {
 			if (child[i] == null)
@@ -174,10 +186,13 @@ public class Variation {
 
 		ArrayList<String> mutation = new ArrayList<String>();
 
+		/*
+		 * Elección según la probabilidad de mutación dada de los individuos de la
+		 * población que sufren mutación
+		 */
 		Main.population.forEach((v) -> {
 			double random = Math.random();
 			if (random < Main.params.getMutationRate()) {
-				/* El individuo sufre mutación */
 				mutation.add(v);
 			}
 		});
@@ -193,10 +208,11 @@ public class Variation {
 	 * @param individual Individuo al que se aplica la mutación
 	 */
 	private static void swapMutation(String individual) {
+		System.out.println("MUTATION");
 
 		String[] individualStrArray = individual.split(",");
 
-		// Puntos de corte aleatorios
+		// Posiciones aleatorias
 		double result1 = Math.random() * ((Main.cities.keySet().size() - 1) + 1);
 		int point1 = (int) result1;
 
@@ -206,15 +222,10 @@ public class Variation {
 		String value1 = individualStrArray[point1];
 		String value2 = individualStrArray[point2];
 
+		/* Intercambio de los valores de dos posiciones escogidas aleatoriamente */
 		individualStrArray[point1] = value2;
-
 		individualStrArray[point2] = value1;
 
-		/*
-		 * Aquí va a haber drama si hay individuos repetidos porque me borra la primera
-		 * instancia que aparezca Aunque igual no es drama porque total yo solo quiero
-		 * borrar uno
-		 */
 		Main.population.remove(individual);
 		Main.population.add(Utils.arrayToString(individualStrArray));
 

@@ -42,15 +42,14 @@ public class Selection {
 
 		/* Deterministic: pick first the most fit member */
 		double random;
-		/*
-		 * Necesitamos tantos padres como el número de individuos en la población actual
-		 */
 
+		/*
+		 * Se escogen tantos padres como el número de individuos en la población actual
+		 */
 		for (int i = 0; i < Main.params.getPopulationSize(); i++) {
 
 			/*
-			 * Escoger k candidatos aleatoriamente entre la población actual Entiendo que
-			 * aquí también se pueden repetir
+			 * Elegir k candidatos aleatoriamente entre la población actual
 			 */
 			for (int i1 = 0; i1 < Main.params.getTournamentSize(); i1++) {
 				random = (Math.random() * ((Main.population.size() - 1) + 1));
@@ -106,7 +105,7 @@ public class Selection {
 		boolean offspringMostFit = false;
 
 		/*
-		 * Escoger al individuo más fit de la población
+		 * Se busca al individuo con mejor valor de adaptación de la población
 		 */
 		for (String individual : Main.population) {
 
@@ -123,7 +122,7 @@ public class Selection {
 			}
 		}
 		/*
-		 * Comparo el más fit de la población vieja con los hijos, para ver si ganan los
+		 * Se compara al individuo con mejor valor de adaptación de la población con los
 		 * hijos
 		 */
 		for (String child : Main.offspring) {
@@ -134,15 +133,17 @@ public class Selection {
 		}
 
 		/*
-		 * Si gana uno de los hijos, me cargo a toda la población y meto a todos los
-		 * hijos en su lugar
+		 * Si alguno de los hijos tiene mejor valor de adaptación, se sustituye a toda
+		 * la generación anterior por la nueva
 		 */
 		if (offspringMostFit) {
 			Main.population.clear();
 			Main.population = (LinkedList<String>) Main.offspring.clone();
+			
 			/*
-			 * Si ninguno de los hijos gana: Busco al menos fit de los hijos, me lo cargo y
-			 * creo una nueva población con el más fit de los padres y los hijos restantes
+			 * En caso de que ninguno de los hijos tenga mejor valor de adaptación: se busca
+			 * al que peor valor de adaptación tiene, se elimina y se sustituye por el
+			 * individuo con mejor valor de adaptación de la generación anterior
 			 */
 		} else {
 			first = true;

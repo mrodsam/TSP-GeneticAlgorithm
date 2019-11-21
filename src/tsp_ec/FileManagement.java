@@ -14,28 +14,51 @@ import java.util.TreeMap;
  *
  */
 public class FileManagement {
+
+	public static String citiesPath;
+
+	public static void mainMenu() {
+		int menuInput;
+		
+		System.out.println("Introduzca el valor entero correspondiente: ");
+		System.out.println("1. TSP-15");
+		System.out.println("2. TSP-100");
+		System.out.println("3. TSP-280");
+		System.out.println("4. TSP-2392");
+
+		Scanner scInput = new Scanner(System.in);
+		menuInput = scInput.nextInt();
+		scInput.close();
+		
+		switch (menuInput) {
+		case 1:
+			citiesPath = "TSP-15";
+			break;
+		case 2:
+			citiesPath = "TSP-100";
+			break;
+		case 3:
+			citiesPath = "TSP-280";
+			break;
+		case 4:
+			citiesPath = "TSP-2392";
+			break;
+
+		default:
+			citiesPath = "TSP-15";
+			break;
+		}
+	}
+
 	/**
 	 * Lectura del archivo de texto que contiene las coordenadas de las ciudades.
 	 */
 	public static void readCities() {
 
-		System.out.println(
-				"Por favor, introduzca el path del fichero donde se encuentran las coordenadas de las ciudades: ");
-
-		String keyboardInput = "";
-		Scanner scInput = new Scanner(System.in);
-		keyboardInput = scInput.nextLine();
-
-		System.out.println("Entrada recibida por teclado es: \"" + keyboardInput + "\"");
-
 		Main.cities = new TreeMap<Integer, City>();
 
-		URL url = null;
-		if (keyboardInput.isEmpty())
-			url = Main.class.getResource("TSP-15.txt");
-		else
-			url = Main.class.getResource(keyboardInput);
-
+		URL url = Main.class.getResource(citiesPath);
+		
 		File file = new File(url.getPath());
 		Scanner sc = null;
 		try {
@@ -47,12 +70,11 @@ public class FileManagement {
 		City c = null;
 		int i = 1;
 		while (sc.hasNextLine()) {
-			String line = sc.nextLine();
+			i = Integer.parseInt(sc.next());
 
-			c = new City(Double.parseDouble(line.split(",")[0]), Double.parseDouble(line.split(",")[1]));
-
+			c = new City(Double.valueOf(sc.next()), Double.valueOf(sc.next()));
+			
 			Main.cities.put(i, c);
-			i++;
 		}
 
 	}
@@ -63,23 +85,9 @@ public class FileManagement {
 	 */
 	public static void readParameters() {
 
-		System.out.println(
-				"Por favor, introduzca el path del fichero donde se encuentran los parámetros del algoritmo genético ");
-
-		String entradaTeclado = "";
-		Scanner entradaEscaner = new Scanner(System.in);
-		entradaTeclado = entradaEscaner.nextLine();
-
-		System.out.println("Entrada recibida por teclado es: \"" + entradaTeclado + "\"");
-
-		entradaEscaner.close();
 		Main.params = new GAParameters();
 
-		URL url = null;
-		if (entradaTeclado.isEmpty())
-			url = Main.class.getResource("GAParameters");
-		else
-			url = Main.class.getResource(entradaTeclado);
+		URL url = Main.class.getResource("GAParameters");
 		File file = new File(url.getPath());
 		Scanner sc = null;
 		try {
@@ -93,6 +101,8 @@ public class FileManagement {
 			Main.params.setPopulationSize(Integer.parseInt(line.split(",")[0]));
 			Main.params.setCrossoverRate(Double.parseDouble(line.split(",")[1]));
 			Main.params.setTournamentSize(Integer.parseInt(line.split(",")[2]));
+			if (line.split(",").length == 4)
+				Main.params.setMutationRate(Double.parseDouble(line.split(",")[3]));
 
 		}
 

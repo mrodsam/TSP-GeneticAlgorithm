@@ -1,7 +1,8 @@
 package tsp_ec;
 
 /**
- * Clase que define un objeto para cada ciudad a través de sus coordenadas cartesianas
+ * Clase que define un objeto para cada ciudad a través de sus coordenadas
+ * cartesianas
  * 
  * @author Marta Rodríguez Sampayo
  *
@@ -44,42 +45,17 @@ public class City {
 	 * @param c Ciudad destino (hasta la que se desea calcular la distancia)
 	 * @return Distancia entre ambas ciudades
 	 */
-	public Double getDistance(City c) {
+	public Integer getDistance(City c) {
 		Double dist = null;
 		Double x = null;
 		Double y = null;
 
-		if (!this.equals(c)) {
+		x = this.getX() - c.getX();
+		y = this.getY() - c.getY();
 
-			x = this.getX() - c.getX();
-			y = this.getY() - c.getY();
+		dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
-			dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-
-		}
-		return dist;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		City other = (City) obj;
-		if (x == null) {
-			if (other.x != null)
-				return false;
-		} else if (!x.equals(other.x))
-			return false;
-		if (y == null) {
-			if (other.y != null)
-				return false;
-		} else if (!y.equals(other.y))
-			return false;
-		return true;
+		return (int) (dist + 0.5);
 	}
 
 	@Override
