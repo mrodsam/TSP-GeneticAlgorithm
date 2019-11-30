@@ -9,6 +9,8 @@ import java.net.URL;
 import java.util.Scanner;
 import java.util.TreeMap;
 
+import org.jfree.data.category.DefaultCategoryDataset;
+
 /**
  * Clase para la gestión de los ficheros en los que se encuentran las
  * coordenadas de cada ciudad y los parámetros del Algoritmo Genético
@@ -111,7 +113,30 @@ public class FileManagement {
 
 	}
 
-	public static void writeData(long executionTime, Double fitness) {
+	public static DefaultCategoryDataset readProgressCurveValues(int generations, int doubleOptimalValue) {
+		File file = new File("src/tsp_ec/progressCurves.txt");
+		Scanner sc = null;
+		try {
+			sc = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			System.out.println("File not found");
+		}
+
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		while (sc.hasNextLine()) {
+			if (sc.hasNext()) {
+				String generation = sc.next();
+				Double value = Double.valueOf(sc.next());
+				dataset.addValue(value, "generations",generation);
+
+			} else
+				break;
+		}
+
+		return dataset;
+	}
+
+	public static void writeTimes(long executionTime, Double fitness) {
 		try {
 			FileWriter fw = new FileWriter("times.txt", true);
 			PrintWriter pw = new PrintWriter(fw);
@@ -130,13 +155,48 @@ public class FileManagement {
 		try {
 			FileWriter fw = new FileWriter("evaluation.txt", true);
 			PrintWriter pw = new PrintWriter(fw);
-			pw.print(sr+"\t");
-			pw.println(MBF);
+			pw.print(sr + "\t");
+			pw.print(MBF + "\t");
+			pw.print(Main.getOptimalSolution() + "\t");
+			pw.print(Main.params.getPopulationSize() + "\t");
+			pw.print(Main.params.getCrossoverRate() + "\t");
+			pw.print(Main.params.getMutationRate() + "\t");
+			pw.println(Main.params.getTournamentSize());
+
 			pw.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void writeProgressCurveValues(Double fitness, int generation, int execution) {
+		try {
+			FileWriter fw = new FileWriter("src/tsp_ec/progressCurves"+execution+".txt", true);
+			PrintWriter pw = new PrintWriter(fw);
+			pw.print(generation + "\t");
+			pw.print(fitness);
+			pw.println();
+
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void writeAESValues(int generations) {
+		try {
+			FileWriter fw = new FileWriter("src/tsp_ec/aes.txt", true);
+			PrintWriter pw = new PrintWriter(fw);
+			pw.print(generations);
+			pw.println();
+
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

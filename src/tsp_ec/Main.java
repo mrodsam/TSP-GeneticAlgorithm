@@ -18,37 +18,11 @@ import geneticAlgorithm.Variation;
 public class Main {
 	/**
 	 * 
-	 * Lectura fichero ciudades (DONE)
-	 * 
-	 * Lectura fichero parámetros (DONE)
-	 * 
-	 * Inicialización de la población (DONE)
-	 * 
-	 * Cálculo del fitness de cada individuo (DONE)
-	 * 
-	 * Funciones de mutación y crossover (DONE) (tener en cuenta las probabilidades
-	 * DONE)
-	 * 
-	 * Funciones de selección de padres y supervivientes (DONE)
-	 * 
-	 * Condición de terminación (DONE a medias)
-	 * 
-	 * Pruebas con TSPs conocidos
-	 * 
 	 * Cambiar los parámetros y seguir probando
 	 * 
 	 * Comentar el código y depurarlo
 	 * 
-	 * Interfaz gráfica sencilla
 	 * 
-	 */
-
-	/*
-	 * Óptimo para las 15 ciudades: 1,13,2,15,9,5,7,3,12,14,10,8,6,4,11: 291
-	 * 
-	 * Individuo: 14,12,3,7,5,9,15,2,13,1,11,4,6,8,10, Fitness: 284.380862862478
-	 * Child: 5,7,3,12,14,10,8,6,4,11,1,13,2,15,9, Fitness:284.380862862478
-	 * Solución: 1,13,2,15,9,5,7,3,12,14,10,8,6,4,11, Fitness: 284.38086286247795
 	 */
 
 	public static TreeMap<Integer, City> cities; // Ciudad asociada a un número entero
@@ -64,45 +38,41 @@ public class Main {
 
 		Double optimalSolution = getOptimalSolution();
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 100; i++) {
 			initialization();
 
 			int generations = 0;
 
 			long tStart = System.currentTimeMillis();
-			while (fitnessFunction(getOptimal()) > optimalSolution && generations < 10000) {
+			while (fitnessFunction(getBestFitness()) > optimalSolution && generations < 20000) {
 				generations++;
+				FileManagement.writeProgressCurveValues(fitnessFunction(getBestFitness()), generations, i);
 				/*
 				 * Mutación antes o después del parentSelection, pero siempre antes del
 				 * survivorSelection
 				 */
 				Variation.mutation();
-				//System.out.println("M");
 				Selection.parentSelection();
-				//System.out.println("PS");
 				Variation.crossover();
-				//System.out.println("Cr");
 				Selection.survivorSelection();
-				//System.out.println("SS");
+
 			}
 
 			long tEnd = System.currentTimeMillis();
 			long difference = tEnd - tStart;
-			FileManagement.writeData(difference, fitnessFunction(getOptimal()));
-			System.out.println("Tiempo de ejecución: " + difference);
+			
+			FileManagement.writeTimes(difference, fitnessFunction(getBestFitness()));
+			
+			if(fitnessFunction(getBestFitness()).equals(optimalSolution))
+				FileManagement.writeAESValues(generations);
 
-			System.out.println("Solución: " + getOptimal());
-			System.out.println("Fitness: " + fitnessFunction(getOptimal()));
-			System.out.println("Generaciones: " + generations);
-			System.out.println("Óptimo: " + optimalSolution);
 		}
 
-		FileManagement.writeEvaluationFile(Evaluation.computeSuccessRate(optimalSolution),
-				Evaluation.computeMBF());
+		FileManagement.writeEvaluationFile(Evaluation.computeSuccessRate(optimalSolution), Evaluation.computeMBF());
 
 	}
 
-	private static Double getOptimalSolution() {
+	public static Double getOptimalSolution() {
 		Double optimalSolution;
 		switch (FileManagement.citiesPath) {
 		case "TSP-15":
@@ -235,11 +205,11 @@ public class Main {
 
 	/**
 	 * Comparación de los valores de adaptación de la población de la última
-	 * generación para obtener el individuo con mayor valor de adaptación.
+	 * generación para obtener el individuo con mejor valor de adaptación.
 	 * 
 	 * @return Cadena de texto que representa el recorrido con menor distancia
 	 */
-	public static String getOptimal() {
+	public static String getBestFitness() {
 		Double lastFitness = null;
 		Double currentFitness = null;
 		String solution = "";
@@ -261,4 +231,5 @@ public class Main {
 
 		return solution;
 	}
+	
 }

@@ -20,18 +20,18 @@ public class Evaluation {
 		Double runs = 0.0;
 		Double successfulRuns = 0.0;
 		while (sc.hasNextLine()) {
-			if(!sc.hasNext())
+			if (!sc.hasNext())
 				break;
 			runs++;
 			sc.next();
-			if(Double.valueOf(sc.next()).equals(optimalSolution))
+			if (Double.valueOf(sc.next()).equals(optimalSolution))
 				successfulRuns++;
 		}
-		sr = (successfulRuns/runs);
-		
+		sr = (successfulRuns / runs);
+
 		return sr;
 	}
-	
+
 	public static Double computeMBF() {
 		Double mbf;
 
@@ -46,14 +46,40 @@ public class Evaluation {
 		Double total = 0.0;
 		Double runs = 0.0;
 		while (sc.hasNextLine()) {
-			if(!sc.hasNext())
+			if (!sc.hasNext())
 				break;
 			runs++;
 			sc.next();
-			total+=Double.valueOf(sc.next());
+			total += Double.valueOf(sc.next());
 		}
-		mbf = total/runs;
-		
+		mbf = total / runs;
+
 		return mbf;
 	}
+
+	public static Double computeAES() {
+
+		Double aes;
+
+		File file = new File("src/tsp_ec/aes.txt");
+		Scanner sc = null;
+		try {
+			sc = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			System.out.println("File not found");
+		}
+
+		double successfulRuns = 0;
+		double generations = 0;
+		while (sc.hasNextLine()) {
+			if (!sc.hasNext())
+				break;
+			generations += Double.parseDouble(sc.next());
+			successfulRuns++;
+		}
+		aes = generations / successfulRuns;
+
+		return aes;
+	}
+
 }
