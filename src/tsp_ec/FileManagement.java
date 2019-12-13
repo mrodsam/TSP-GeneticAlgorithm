@@ -5,11 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.TreeMap;
-
-import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * Clase para la gestión de los ficheros en los que se encuentran las
@@ -20,39 +18,53 @@ import org.jfree.data.category.DefaultCategoryDataset;
  */
 public class FileManagement {
 
-	public static String citiesPath;
+	public static String tspFile = Paths.get("./ProblemFiles/").toString();
+	public static String parametersFile = Paths.get("./ProblemFiles/").toString();
 
 	public static void mainMenu() {
 		int menuInput;
 
-		System.out.println("Introduzca el valor entero correspondiente: ");
+		System.out.println(
+				"Introduzca el número del menú correspondiente a la instancia del problema (o el nombre del archivo): ");
 		System.out.println("1. TSP-15");
 		System.out.println("2. TSP-100");
 		System.out.println("3. TSP-280");
 		System.out.println("4. TSP-2392");
 
 		Scanner scInput = new Scanner(System.in);
-		menuInput = scInput.nextInt();
-		scInput.close();
+		if (scInput.hasNextInt()) {
+			menuInput = scInput.nextInt();
+			switch (menuInput) {
+			case 1:
+				tspFile += "/TSP-15.txt";
+				break;
+			case 2:
+				tspFile += "/TSP-100.txt";
+				break;
+			case 3:
+				tspFile += "/TSP-280.txt";
+				break;
+			case 4:
+				tspFile += "/TSP-2392.txt";
+				break;
 
-		switch (menuInput) {
-		case 1:
-			citiesPath = "TSP-15";
-			break;
-		case 2:
-			citiesPath = "TSP-100";
-			break;
-		case 3:
-			citiesPath = "TSP-280";
-			break;
-		case 4:
-			citiesPath = "TSP-2392";
-			break;
+			default:
+				tspFile += "/TSP-15.txt";
+				break;
+			}
+		} else
+			tspFile += "/" + scInput.next();
 
-		default:
-			citiesPath = "TSP-15";
-			break;
+		System.out.println(
+				"Introduzca el número del menú correspondiente al archivo en el que se encuentran los parámetros del algoritmo: (o el nombre de un nuevo archivo) ");
+		System.out.println("1. GAParameters.txt");
+		if (scInput.hasNextInt())
+			parametersFile += "/GAParameters.txt";
+		else {
+			String parametersInput = scInput.next();
+			parametersFile += "/" + parametersInput;
 		}
+
 	}
 
 	/**
@@ -62,9 +74,7 @@ public class FileManagement {
 
 		Main.cities = new TreeMap<Integer, City>();
 
-		URL url = Main.class.getResource(citiesPath);
-
-		File file = new File(url.getPath());
+		File file = new File(Paths.get(tspFile).toUri());
 		Scanner sc = null;
 		try {
 			sc = new Scanner(file);
@@ -91,9 +101,7 @@ public class FileManagement {
 	public static void readParameters() {
 
 		Main.params = new GAParameters();
-
-		URL url = Main.class.getResource("GAParameters");
-		File file = new File(url.getPath());
+		File file = new File(Paths.get(parametersFile).toUri());
 		Scanner sc = null;
 		try {
 			sc = new Scanner(file);
@@ -113,50 +121,43 @@ public class FileManagement {
 
 	}
 
-	public static DefaultCategoryDataset readProgressCurveValues(int generations, int doubleOptimalValue) {
-		File file = new File("src/tsp_ec/progressCurves.txt");
-		Scanner sc = null;
-		try {
-			sc = new Scanner(file);
-		} catch (FileNotFoundException e) {
-			System.out.println("File not found");
-		}
-
-		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		while (sc.hasNextLine()) {
-			if (sc.hasNext()) {
-				String generation = sc.next();
-				Double value = Double.valueOf(sc.next());
-				dataset.addValue(value, "generations",generation);
-
-			} else
-				break;
-		}
-
-		return dataset;
-	}
-
+	/**
+	 * Almacenamiento en un archivo de texto del tiempo que tarda en realizarse cada
+	 * ejecución del algoritmo y del mejor valor de adaptación obtenido en dicha
+	 * ejecución.
+	 * 
+	 * @param executionTime Duración de una ejecución
+	 * @param fitness       Mejor valor de adaptación al finalizar la ejecución
+	 */
 	public static void writeTimes(long executionTime, Double fitness) {
 		try {
-			FileWriter fw = new FileWriter("times.txt", true);
+			FileWriter fw = new FileWriter(Paths.get("./Evaluation") + "/times.txt", true);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.print(executionTime + "\t");
 			pw.println(fitness);
 			pw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error al escribir el archivo de tiempos: " + e.getMessage());
 		}
 
 	}
 
-	public static void writeEvaluationFile(Double sr, Double MBF) {
+	/**
+	 * Almacenamiento en un archivo de texto de la tasa de éxito y el mejor fitness
+	 * promedio. También se incluyen la solución óptima conocida para el problema y
+	 * los parámetros utilizados para la ejecución del algoritmo
+	 * 
+	 * @param sr  Tasa de éxito
+	 * @param MBF Mejor fitness promedio
+	 */
+	public static void writeEvaluationFile(Double sr, Double MBF, Double aes) {
 
 		try {
-			FileWriter fw = new FileWriter("evaluation.txt", true);
+			FileWriter fw = new FileWriter(Paths.get("./Evaluation") + "/evaluation.txt", true);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.print(sr + "\t");
 			pw.print(MBF + "\t");
+			pw.print(aes + "\t");
 			pw.print(Main.getOptimalSolution() + "\t");
 			pw.print(Main.params.getPopulationSize() + "\t");
 			pw.print(Main.params.getCrossoverRate() + "\t");
@@ -165,15 +166,24 @@ public class FileManagement {
 
 			pw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error al escribir el archivo de evaluación: " + e.getMessage());
 		}
 
 	}
 
+	/**
+	 * Almacenamiento en varios archivos de texto (uno por ejecución) del mejor
+	 * valor de adaptación obtenido en cada generación para representar
+	 * posteriormente las curvas de progreso.
+	 * 
+	 * @param fitness    Mejor valor de adaptación
+	 * @param generation Número de generaciones
+	 * @param execution  Número de ejecución
+	 */
 	public static void writeProgressCurveValues(Double fitness, int generation, int execution) {
 		try {
-			FileWriter fw = new FileWriter("src/tsp_ec/progressCurves"+execution+".txt", true);
+			File file = new File(Paths.get("./Evaluation") + "/progressCurves" + execution + ".txt");
+			FileWriter fw = new FileWriter(file, true);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.print(generation + "\t");
 			pw.print(fitness);
@@ -181,22 +191,26 @@ public class FileManagement {
 
 			pw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error al escribir el archivo de curvas de progreso: " + e.getMessage());
 		}
 	}
-	
+
+	/**
+	 * Almacenamiento en un archivo de texto del número de generaciones hasta
+	 * alcanzar el óptimo global para el cálculo del AES
+	 * 
+	 * @param generations Número de generaciones
+	 */
 	public static void writeAESValues(int generations) {
 		try {
-			FileWriter fw = new FileWriter("src/tsp_ec/aes.txt", true);
+			FileWriter fw = new FileWriter(Paths.get("./Evaluation") + "/aes.txt", true);
 			PrintWriter pw = new PrintWriter(fw);
 			pw.print(generations);
 			pw.println();
 
 			pw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error al escribir el archivo aes.txt: " + e.getMessage());
 		}
 	}
 }

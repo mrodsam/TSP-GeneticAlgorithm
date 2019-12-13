@@ -34,13 +34,6 @@ public class Selection {
 		Double lastFitness = null;
 		Double currentFitness = null;
 
-		/*
-		 * Tournament selection: with replacement
-		 * 
-		 * With/without replacement, deterministic/stochastic
-		 */
-
-		/* Deterministic: pick first the most fit member */
 		double random;
 
 		/*
@@ -93,11 +86,7 @@ public class Selection {
 	 * población.
 	 */
 	public static void survivorSelection() {
-		/*
-		 * Comparar el fitness del padre que es el más fit con los hijos, si ninguno
-		 * gana, se queda el padre Si se queda el padre, buscamos otro en la población
-		 * que sustituir con el hijo Si no se queda el padre se cambian padres por hijos
-		 */
+
 		String mostFit = "";
 		String leastFit = "";
 		boolean first = true;

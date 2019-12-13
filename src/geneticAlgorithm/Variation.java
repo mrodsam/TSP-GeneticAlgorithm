@@ -64,7 +64,7 @@ public class Variation {
 			 * entre los dos padres escogidos aleatoriamente
 			 */
 			if (random < Main.params.getCrossoverRate()) {
-				// Puntos de corte aleatorios
+				
 				double result1 = Math.random() * ((Main.cities.keySet().size() - 1) + 1);
 				point1 = (int) result1;
 

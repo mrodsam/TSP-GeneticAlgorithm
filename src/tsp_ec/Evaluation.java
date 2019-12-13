@@ -2,14 +2,29 @@ package tsp_ec;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
+/**
+ * Clase con los cálculos de ciertas medidas de prestaciones para la evaluación
+ * del algoritmo genético
+ * 
+ * @author Marta Rodríguez Sampayo
+ *
+ */
 public class Evaluation {
 
+	/**
+	 * Cálculo de la tasa de éxito
+	 * 
+	 * @param optimalSolution Solución obtenida al finalizar la ejecución del
+	 *                        algoritmo
+	 * @return Tasa de éxito
+	 */
 	public static Double computeSuccessRate(Double optimalSolution) {
 		Double sr;
 
-		File file = new File("times.txt");
+		File file = new File(Paths.get("./Evaluation") + "/times.txt");
 		Scanner sc = null;
 		try {
 			sc = new Scanner(file);
@@ -32,10 +47,16 @@ public class Evaluation {
 		return sr;
 	}
 
+	/**
+	 * Cálculo del mejor fitness promedio a partir de las soluciones obtenidas en
+	 * varias ejecuciones del algoritmo
+	 * 
+	 * @return Mejor fitness promedio
+	 */
 	public static Double computeMBF() {
 		Double mbf;
 
-		File file = new File("times.txt");
+		File file = new File(Paths.get("./Evaluation") + "/times.txt");
 		Scanner sc = null;
 		try {
 			sc = new Scanner(file);
@@ -57,16 +78,21 @@ public class Evaluation {
 		return mbf;
 	}
 
+	/**
+	 * Cálculo del AES (Average number of Evaluations to a Solution)
+	 * 
+	 * @return AES
+	 */
 	public static Double computeAES() {
 
 		Double aes;
 
-		File file = new File("src/tsp_ec/aes.txt");
+		File file = new File(Paths.get("./Evaluation") + "/aes.txt");
 		Scanner sc = null;
 		try {
 			sc = new Scanner(file);
 		} catch (FileNotFoundException e) {
-			System.out.println("File not found");
+			return 0.0;
 		}
 
 		double successfulRuns = 0;
@@ -78,7 +104,7 @@ public class Evaluation {
 			successfulRuns++;
 		}
 		aes = generations / successfulRuns;
-
+		sc.close();
 		return aes;
 	}
 
